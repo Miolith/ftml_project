@@ -38,7 +38,7 @@ for (name, model) in model_list.items():
 print("\nRidge regression seems to be the best regression model in this case")
 
 clf = GridSearchCV(estimator=Ridge(),
-        param_grid={'alpha': list(range(10, 100))})
+        param_grid={'alpha': range(1, 100)})
 clf.fit(X,y)
-print(clf.best_params_)
-print(clf.best_score_)
+print("The best parameters are :", clf.best_params_)
+print("The CV score of this setting is", clf.best_score_)
