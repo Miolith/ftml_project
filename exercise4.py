@@ -3,18 +3,16 @@ from sklearn.svm import SVR
 from sklearn.linear_model import Ridge, Lasso
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, GradientBoostingRegressor
 
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import r2_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import cross_val_score
+
 
 X = np.load("data/regression/inputs.npy")
 y = np.load("data/regression/labels.npy")
 
-X_train, X_test, y_train, y_test = train_test_split(X,y)
 
 def test_model(model):
-    model.fit(X_train, y_train.ravel())
-    y_pred = model.predict(X_test)
-    return r2_score(y_test, y_pred)
+    return np.mean(cross_val_score(model, X, y.ravel(), cv=5))
 
 print("Datasets proprties :")
 print("Nb of samples :", len(y))
@@ -38,3 +36,9 @@ for (name, model) in model_list.items():
     print(name, "performance :", test_model(model))
 
 print("\nRidge regression seems to be the best regression model in this case")
+
+clf = GridSearchCV(estimator=Ridge(),
+        param_grid={'alpha': list(range(10, 100))})
+clf.fit(X,y)
+print(clf.best_params_)
+print(clf.best_score_)
